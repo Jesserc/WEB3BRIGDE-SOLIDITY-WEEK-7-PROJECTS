@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
-contract TODO {
+contract TodoContract {
     //todo structure
     struct Todo {
         string title;
@@ -34,5 +34,17 @@ contract TODO {
 
     function getTask(uint256 index) external view returns (Todo memory) {
         return todos[index];
+    }
+
+    function getAllTasks() external view returns (Todo[] memory) {
+        return todos;
+    }
+
+    function deleteTask(uint256 index) external returns (bool success) {
+        // for(uint i = index; i > todos.length; i--){
+        // }
+        todos[index] = todos[todos.length - 1];
+        todos.pop();
+        success = true;
     }
 }
