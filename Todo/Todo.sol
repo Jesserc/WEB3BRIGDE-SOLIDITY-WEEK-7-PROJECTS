@@ -13,18 +13,26 @@ contract TODO {
         todos.push(Todo({title: _title, status: false}));
     }
 
-    function updateText(string memory _newTitle, uint256 _index)
+    function updateText(string memory _newTitle, uint256 index)
         external
         returns (bool success)
     {
-        Todo storage todo = todos[_index];
+        Todo storage todo = todos[index];
         todo.title = _newTitle;
+        //or
+        //todos[index].title = _newTitle;
+        success = true;
     }
 
-    function setStatus(uint256 _index) external {
-        Todo storage todo = todos[_index];
+    function setStatus(uint256 index) external {
+        Todo storage todo = todos[index];
         todo.status = !todo.status;
+
+        //or
+        //todos[index].status = !todos[index].status;
     }
 
-    function getTask() external returns (TODO) {}
+    function getTask(uint256 index) external view returns (Todo memory) {
+        return todos[index];
+    }
 }
