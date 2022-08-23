@@ -24,39 +24,68 @@ contract AuctionContract {
     address seller;
     uint8 ID = 1;
 
-    struct BidDetails {
+    struct AuctionDetails {
         string title;
         IERC721 tokenBidPrize;
         uint256 highestBid;
-        uint256 highestBidder;
+        address highestBidder;
         bool started;
         uint256 startAt;
         bool ended;
         uint256 endAt;
     }
+    struct test {
+        string name;
+    }
 
     mapping(address => uint256) bidders;
-    mapping(uint256 => BidDetails) bidDetails;
+    mapping(uint256 => AuctionDetails) auctionDetail;
 
-    constructor(string memory _title, address _tokenBidPrize) {
-        BidDetails storage bid = bidDetails[ID];
-        bid.title = _title;
-        bid.tokenBidPrize = IERC721(_tokenBidPrize);
+    constructor(
+        string memory _title,
+        address _tokenBidPrize,
+        uint256 _startingBid
+    ) {
+        AuctionDetails storage auction = auctionDetail[ID];
+        auction.title = _title;
+        auction.tokenBidPrize = IERC721(_tokenBidPrize);
+        auction.highestBid = _startingBid;
     }
 
     //function to start bid
-    function startBid(uint256 _endAt) external {
-        BidDetails storage bid = bidDetails[ID];
-        require(!bid.started, "Bid already started");
-        bid.startAt = block.timestamp;
-        bid.started = true;
-        bid.endAt = block.timestamp + (_endAt * 1 seconds);
+    function startAuction(uint256 _endAt) external {
+        AuctionDetails storage auction = auctionDetail[ID];
+        require(!auction.started, "Auction already started");
+        auction.startAt = block.timestamp;
+        auction.started = true;
+        auction.endAt = block.timestamp + (_endAt * 1 seconds);
     }
 
-    function bid() external {}
+    function Bid() external payable {
+        AuctionDetails storage auction = auctionDetail[ID];
+        uint256 hasEnded = auction.endAt;
+        uint256 hasStarted = auction.startAt;
+        uint256 bid = auction.highestBid;
+        require(msg.sender != address(0), "Address not valid");
+        require(block.timestamp >= hasStarted, "Auction not started");
+        require(block.timestamp <= hasEnded, "Auction already ended");
+        require(auction.started, "Auction not started");
+        require(msg.value > bid, "Amount too small");
+
+        bidders[msg.sender] += msg.value;
+        auction.highestBidder = msg.sender;
+        auction.highestBid = msg.value;
+    }
+
+    function declineBid() external {
+        //does this reset highest bidder? --yes, it does
+        uint256 bal = bidders[msg.sender];
+        bidders[msg.sender] = 0;
+        payable(msg.sender).transfer(bal);
+    }
 
     //return bid details
-    function returnBidDetails() external view returns (BidDetails memory) {
-        return bidDetails[ID];
+    function returnBidDetails() external view returns (AuctionDetails memory) {
+        return auctionDetail[ID];
     }
 }
