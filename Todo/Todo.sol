@@ -11,12 +11,23 @@ contract TodoContract {
     }
     Todo[] todos;
 
+    //require index of array exists before making state changes or reading data
+    modifier todoExists(uint8 _index) {
+        require(_index <= todos.length, "Item does not exists");
+
+        _;
+    }
+
     function createTask(string memory _title) external {
         todos.push(Todo({title: _title, status: false}));
+
         emit TaskEvent("Task created");
     }
 
-    function updateText(string memory _newTitle, uint256 index) external {
+    function updateText(string memory _newTitle, uint256 index)
+        external
+        todoExists(_index)
+    {
         Todo storage todo = todos[index];
         todo.title = _newTitle;
         //or
@@ -24,7 +35,7 @@ contract TodoContract {
         emit TaskEvent("Task title updated");
     }
 
-    function setStatus(uint256 index) external {
+    function setStatus(uint256 index) external todoExist(_index) {
         Todo storage todo = todos[index];
         todo.status = !todo.status;
 
@@ -42,11 +53,6 @@ contract TodoContract {
     }
 
     function deleteTask(uint256 index) external returns () {
-        // for(uint i = index; i > todos.length; i--){
-        // }
-        // todos[index] = todos[todos.length - 1];
-        // todos.pop();
-        // success = true;
         for (uint256 i = 0; i < todos.length - 1; i++) {
             todos[i] = todos[i + 1];
         }
