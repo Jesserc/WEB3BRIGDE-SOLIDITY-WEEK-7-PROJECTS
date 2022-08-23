@@ -76,13 +76,13 @@ contract ProposalContract {
             bool
         )
     {
-        Proposal memory _vote = proposals[_id];
+        Proposal memory vote = proposals[_id];
         return (
-            _vote.title,
-            _vote.ownerOfProposal,
-            _vote.deadline,
-            _vote.numberOfVotes,
-            _vote.executed
+            vote.title,
+            vote.ownerOfProposal,
+            vote.deadline,
+            vote.numberOfVotes,
+            vote.executed
         );
     }
 
