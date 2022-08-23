@@ -19,8 +19,8 @@ contract ProposalContract {
     mapping(address => bool) hasVoted;
     mapping(uint256 => Proposal) proposals;
 
-    event VoteCreated(string, uint256);
-    event VotedNow(string, uint256);
+    event VoteCreated(string, uint8);
+    event VotedNow(string, uint8);
 
     constructor(uint256 _maxAmountToAcceptProposal) {
         maxAmountToAcceptProposal = _maxAmountToAcceptProposal;
@@ -33,7 +33,7 @@ contract ProposalContract {
         vote.ownerOfProposal = msg.sender;
         vote.deadline = block.timestamp + (_deadline * 1 seconds);
 
-        emit VoteCreated("Voted created with id:", ID);
+        emit VoteCreated("Vote created with the id:", ID);
         //push to proposal array
         allProposals.push(
             Proposal({
@@ -62,7 +62,7 @@ contract ProposalContract {
         if (vote.numberOfVotes == maxAmountToAcceptProposal) {
             vote.executed = true;
         }
-        emit VotedNow("Voted for proposal:", vote.numberOfVotes);
+        emit VotedNow("Voted for proposal, vote count =", vote.numberOfVotes);
     }
 
     function returnProposal(uint256 _id)

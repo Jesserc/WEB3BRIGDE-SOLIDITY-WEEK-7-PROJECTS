@@ -2,6 +2,8 @@
 pragma solidity ^0.8.2;
 
 contract TodoContract {
+    event TaskEvent(string);
+
     //todo structure
     struct Todo {
         string title;
@@ -11,17 +13,15 @@ contract TodoContract {
 
     function createTask(string memory _title) external {
         todos.push(Todo({title: _title, status: false}));
+        emit TaskEvent("Task created");
     }
 
-    function updateText(string memory _newTitle, uint256 index)
-        external
-        returns (bool success)
-    {
+    function updateText(string memory _newTitle, uint256 index) external {
         Todo storage todo = todos[index];
         todo.title = _newTitle;
         //or
         //todos[index].title = _newTitle;
-        success = true;
+        emit TaskEvent("Task title updated");
     }
 
     function setStatus(uint256 index) external {
@@ -30,9 +30,10 @@ contract TodoContract {
 
         //or
         //todos[index].status = !todos[index].status;
+        emit TaskEvent("Task status updated");
     }
 
-    function getTask(uint256 index) external view returns (Todo memory) {
+    function getATask(uint256 index) external view returns (Todo memory) {
         return todos[index];
     }
 
@@ -40,11 +41,17 @@ contract TodoContract {
         return todos;
     }
 
-    function deleteTask(uint256 index) external returns (bool success) {
+    function deleteTask(uint256 index) external returns () {
         // for(uint i = index; i > todos.length; i--){
         // }
-        todos[index] = todos[todos.length - 1];
+        // todos[index] = todos[todos.length - 1];
+        // todos.pop();
+        // success = true;
+        for (uint256 i = 0; i < todos.length - 1; i++) {
+            todos[i] = todos[i + 1];
+        }
         todos.pop();
-        success = true;
+
+        emit TaskEvent("Task deleted");
     }
 }
