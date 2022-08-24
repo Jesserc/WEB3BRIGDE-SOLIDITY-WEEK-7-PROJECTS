@@ -13,8 +13,7 @@ contract Lottery {
     address payable[] public players;
 
     //mappings
-    //mapping to check winner of a particular no. of a lottery, after the winner is picked,
-    //and the money is transferred to the winner, when en
+    //mapping to check winner of a particular ID of a lottery, after the winner is picked.
     mapping(uint32 => address payable) LotteryHistory;
     uint32 LotteryID = 1;
 
