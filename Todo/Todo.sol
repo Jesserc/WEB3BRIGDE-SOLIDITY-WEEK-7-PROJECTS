@@ -24,9 +24,9 @@ contract TodoContract {
         emit TaskEvent("Task created");
     }
 
-    function updateText(string memory _newTitle, uint256 index)
+    function updateText(string memory _newTitle, uint8 index)
         external
-        todoExists(_index)
+        todoExists(index)
     {
         Todo storage todo = todos[index];
         todo.title = _newTitle;
@@ -35,7 +35,7 @@ contract TodoContract {
         emit TaskEvent("Task title updated");
     }
 
-    function setStatus(uint256 index) external todoExist(_index) {
+    function setStatus(uint8 index) external todoExists(index) {
         Todo storage todo = todos[index];
         todo.status = !todo.status;
 
