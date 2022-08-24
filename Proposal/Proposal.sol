@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 contract ProposalContract {
     //creating a proposal contract that requires votes before it will be executed
     uint256 maxAmountToAcceptProposal;
-    uint256 ID = 1;
+    uint8 ID = 1;
 
     struct Proposal {
         string title;
@@ -20,7 +20,7 @@ contract ProposalContract {
     mapping(uint256 => Proposal) proposals;
 
     event VoteCreated(string, uint8);
-    event VotedNow(string, uint8);
+    event VotedNow(string, uint256);
 
     constructor(uint256 _maxAmountToAcceptProposal) {
         maxAmountToAcceptProposal = _maxAmountToAcceptProposal;
