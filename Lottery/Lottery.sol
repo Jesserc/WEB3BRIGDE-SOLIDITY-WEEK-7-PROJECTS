@@ -14,7 +14,8 @@ contract Lottery {
     //mappings
     //mapping to check winner of a particular no. of a lottery, after the winner is picked,
     //and the money is transferred to the winner, when en
-    mapping(uint256 => address payable) LotteryHistory;
+    mapping(uint32 => address payable) LotteryHistory;
+    uint32 LotteryID = 1;
 
     constructor() payable {
         owner = msg.sender;
@@ -44,7 +45,18 @@ contract Lottery {
         );
     }
 
-    function pickWinner() external view {
-        
+    function pickWinner() external {
+        uint256 index = randomness() % players.length;
+        players[index].transfer(address(this).balance);
+
+        LotteryHistory[LotteryID] = players[index];
+        LotteryID++;
+
+        // reset the state of the contract
+        players = new address payable[](0);
+    }
+
+    function returnLotteryHistory(uint32 id) public view returns (address) {
+        return LotteryHistory[id];
     }
 }
