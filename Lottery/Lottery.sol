@@ -18,6 +18,11 @@ contract Lottery {
     mapping(uint32 => address payable) LotteryHistory;
     uint32 LotteryID = 1;
 
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
     constructor() payable {
         owner = msg.sender;
         lotteryPrize = msg.value;
@@ -38,7 +43,7 @@ contract Lottery {
         players.push(payable(msg.sender));
     }
 
-    function randomness() public view returns (uint256 randomNumber) {
+    function randomness() public view onlyOwner returns (uint256 randomNumber) {
         randomNumber = uint256(
             keccak256(
                 abi.encode(block.timestamp, block.difficulty, players.length)
@@ -46,7 +51,7 @@ contract Lottery {
         );
     }
 
-    function pickWinner() external {
+    function pickWinner() external onlyOwner {
         uint256 index = randomness() % players.length;
         luckyPlayerIndex = index;
         players[index].transfer(address(this).balance);
@@ -62,7 +67,7 @@ contract Lottery {
         return LotteryHistory[id];
     }
 
-    function returnBalance() external view returns (uint256) {
+    function returnBalance() external view onlyOwner returns (uint256) {
         return address(this).balance;
     }
 }
