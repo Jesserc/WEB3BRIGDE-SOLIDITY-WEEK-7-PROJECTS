@@ -6,10 +6,11 @@ pragma solidity ^0.8.0;
 
 contract Lottery {
     uint256 lotteryPrize;
-    uint256 entryFee = .05 ether;
-    uint8 maxPlayer = 4;
+    uint256 public entryFee = .05 ether;
+    uint8 public maxPlayer = 4;
+    uint256 public luckyPlayerIndex;
     address immutable owner;
-    address payable[] players;
+    address payable[] public players;
 
     //mappings
     //mapping to check winner of a particular no. of a lottery, after the winner is picked,
@@ -37,7 +38,7 @@ contract Lottery {
         players.push(payable(msg.sender));
     }
 
-    function randomness() internal returns (uint256 randomNumber) {
+    function randomness() public view returns (uint256 randomNumber) {
         randomNumber = uint256(
             keccak256(
                 abi.encode(block.timestamp, block.difficulty, players.length)
@@ -47,6 +48,7 @@ contract Lottery {
 
     function pickWinner() external {
         uint256 index = randomness() % players.length;
+        luckyPlayerIndex = index;
         players[index].transfer(address(this).balance);
 
         LotteryHistory[LotteryID] = players[index];
@@ -58,5 +60,9 @@ contract Lottery {
 
     function returnLotteryHistory(uint32 id) public view returns (address) {
         return LotteryHistory[id];
+    }
+
+    function returnBalance() external view returns (uint256) {
+        return address(this).balance;
     }
 }
