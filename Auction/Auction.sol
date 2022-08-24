@@ -27,15 +27,13 @@ contract AuctionContract {
     struct AuctionDetails {
         string title;
         IERC721 tokenBidPrize;
+        uint256 tokenBidPrizeId;
         uint256 highestBid;
         address highestBidder;
         bool started;
         uint256 startAt;
         bool ended;
         uint256 endAt;
-    }
-    struct test {
-        string name;
     }
 
     mapping(address => uint256) bidders;
@@ -44,12 +42,15 @@ contract AuctionContract {
     constructor(
         string memory _title,
         address _tokenBidPrize,
+        uint256 _tokenBidPrizeId,
         uint256 _startingBid
     ) {
         AuctionDetails storage auction = auctionDetail[ID];
         auction.title = _title;
         auction.tokenBidPrize = IERC721(_tokenBidPrize);
+        auction.tokenBidPrizeId = _tokenBidPrizeId;
         auction.highestBid = _startingBid;
+        seller = payable(msg.sender);
     }
 
     //function to start bid
@@ -78,10 +79,43 @@ contract AuctionContract {
     }
 
     function declineBid() external {
+        AuctionDetails memory auction = auctionDetail[ID];
+        require(auction.started, "Auction not started");
+        require(bidders[msg.sender] > 0, "No balance available");
         //does this reset highest bidder? --yes, it does
         uint256 bal = bidders[msg.sender];
         bidders[msg.sender] = 0;
         payable(msg.sender).transfer(bal);
+    }
+
+    function endAuction() external {
+        AuctionDetails storage auction = auctionDetail[ID];
+        uint256 hasEnded = auction.endAt;
+        address highestBidder = auction.highestBidder;
+        uint256 bid = auction.highestBid;
+        IERC721 auctionPrize = auction.tokenBidPrize;
+        uint256 tokenBidPrizeId = auction.tokenBidPrizeId;
+        require(auction.started, "Auction not started");
+        require(!auction.ended, "Auction already ended");
+        require(block.timestamp >= hasEnded, "Auction not ended");
+
+        auction.ended = true;
+        if (highestBidder != address(0)) {
+            auctionPrize.safeTransferFrom(
+                address(this),
+                highestBidder,
+                tokenBidPrizeId
+            );
+
+            payable(seller).transfer(bid);
+        } else {
+            auctionPrize.safeTransferFrom(
+                address(this),
+                seller,
+                tokenBidPrizeId
+            );
+            payable(seller).transfer(bid);
+        }
     }
 
     //return bid details
