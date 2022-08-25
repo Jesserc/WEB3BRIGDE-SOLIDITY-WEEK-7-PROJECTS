@@ -2,7 +2,11 @@
 pragma solidity ^0.8.0;
 
 //creating a lottery contract
-//with my logic, there'll be a fixed price ETH for the lottery and users will
+//To achieve randomness to pick a winner at random
+//I'm using the hash of some global variables
+//like block.timestamp..etc
+//NOTE: this can also be achieved using
+//Chainlink VERIFIABLE RANDOM FUNCTION (vrf), but for some reason, it's slow
 
 contract Lottery {
     uint256 lotteryPrize;
