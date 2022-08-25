@@ -17,7 +17,5 @@
     1_000 is a thousand
     1_0_0_0 is a thousand
     1_000e0_3 is a million
-    
-    Python spec https://www.python.org/dev/peps/pep-0515/
-    
-    ------------------------------
+   
+    -----------------------------------------------
