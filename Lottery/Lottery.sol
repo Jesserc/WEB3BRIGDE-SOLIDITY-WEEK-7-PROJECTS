@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 //To achieve randomness to pick a winner at random
 //I'm using the hash of some global variables
 //like block.timestamp..etc (this comes with it's downside, as miners can
-//manipulate the contract as these global variables are predictable
+//manipulate the contract as these global variables are predictable)
 //NOTE: this can also be achieved using
 //Chainlink VERIFIABLE RANDOM FUNCTION (vrf), but for some reason, it's slow
 
