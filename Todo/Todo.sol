@@ -53,7 +53,7 @@ contract TodoContract {
     }
 
     function deleteTask(uint256 index) external {
-        for (uint256 i = 0; i < todos.length - 1; i++) {
+        for (uint256 i = index; i < todos.length - 1; i++) {
             todos[i] = todos[i + 1];
         }
         todos.pop();
