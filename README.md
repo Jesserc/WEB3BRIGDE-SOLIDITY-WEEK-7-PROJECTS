@@ -1,5 +1,7 @@
 # WEB3BRIGDE-SOLIDITY-WEEK-7-PROJECTS
 
+## solidity tips
+
     //Paul Razvan Berg tips (@PaulRBerg)
     1️⃣ Use "type(uint256).max" instead of "uint256(-1)"
     2️⃣ Surround code with {} to avoid "stack too deep"
